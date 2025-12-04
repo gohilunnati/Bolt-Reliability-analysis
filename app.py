@@ -7,6 +7,11 @@ import plotly.figure_factory as ff
 import os
 
 # =============================================================================
+# 0. EXTERNAL FILE LINK
+# =============================================================================
+FILE_URL = "https://drive.google.com/file/d/1e4myU7DVNgEE2oZzLmjNBrBvF7UD_28B/view?usp=sharing"  # <<< ADDED
+
+# =============================================================================
 # 1. PAGE CONFIGURATION
 # =============================================================================
 st.set_page_config(page_title="Bolt Reliability Digital Twin", page_icon="⚙️", layout="wide")
@@ -20,6 +25,9 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
+# Optional: show the URL in the sidebar as a clickable link
+st.sidebar.markdown(f"[🔗 Open reference file]({FILE_URL})")  # <<< ADDED
+
 # =============================================================================
 # 2. LOCAL MODEL LOADER (SIMPLE & ROBUST)
 # =============================================================================
@@ -32,6 +40,7 @@ def load_assets():
     # 1. CHECK FILES
     if not os.path.exists(model_filename):
         st.error(f"❌ Critical Error: Model file '{model_filename}' not found in repo.")
+        st.info(f"You can also store the model externally here: {FILE_URL}")  # <<< ADDED (optional)
         return None, None
         
     if not os.path.exists(scaler_filename):
@@ -122,7 +131,6 @@ else:
 
 st.write("")
 
-# Metrics
 c1, c2, c3 = st.columns(3)
 c1.metric("Failure Probability", f"{prob*100:.4f}%")
 c2.metric("Reliability Index", f"{(1-prob)*100:.4f}%")
@@ -130,7 +138,6 @@ c3.metric("Holding Capacity", f"{int(capacity)} N")
 
 st.markdown("---")
 
-# Charts
 col1, col2 = st.columns([1, 2])
 with col1:
     st.markdown("##### Risk Gauge")
