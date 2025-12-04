@@ -5,7 +5,6 @@ import joblib
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
 import os
-import gdown  # Library to download from Google Drive
 
 # =============================================================================
 # 1. PAGE CONFIGURATION
@@ -22,41 +21,47 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # =============================================================================
-# 2. CLOUD MODEL LOADER (FROM GOOGLE DRIVE)
+# 2. LOCAL MODEL LOADER (SIMPLE & ROBUST)
 # =============================================================================
 @st.cache_resource
 def load_assets():
-    # 1. DOWNLOAD MODEL FROM DRIVE
-    # Your File ID from the link: 1e4myU7DVNgEE2oZzLmjNBrBvF7UD_28B
-    file_id = '1e4myU7DVNgEE2oZzLmjNBrBvF7UD_28B'
-    model_filename = 'bolt_dnn_precision.keras'
+    # Make sure these filenames match exactly what you uploaded to GitHub!
+    model_filename = 'bolt_dnn_precision.keras' 
+    scaler_filename = 'scaler_precision_run.pkl'
     
+    # 1. CHECK FILES
     if not os.path.exists(model_filename):
-        url = f'https://drive.google.com/uc?id={file_id}'
-        gdown.download(url, model_filename, quiet=False)
-    
+        st.error(f"❌ Critical Error: Model file '{model_filename}' not found in repo.")
+        return None, None
+        
+    if not os.path.exists(scaler_filename):
+        # Fallback names just in case
+        if os.path.exists('dnn_scaler_precision_run.pkl'):
+            scaler_filename = 'dnn_scaler_precision_run.pkl'
+        else:
+            st.error(f"❌ Critical Error: Scaler file '{scaler_filename}' not found in repo.")
+            return None, None
+
     # 2. LOAD MODEL
     try:
+        # Custom objects needed for Keras 3 saving format
         custom_objs = {'mse': tf.keras.losses.MeanSquaredError(), 'mae': tf.keras.metrics.MeanAbsoluteError()}
         model = tf.keras.models.load_model(model_filename, custom_objects=custom_objs, compile=False)
         model.compile(loss='mse', optimizer='adam')
     except Exception as e:
-        st.error(f"Error loading model: {e}")
+        st.error(f"❌ Error loading Keras model: {e}")
         return None, None
 
-    # 3. LOAD SCALER (Local File)
-    # Ensure you renamed your downloaded scaler to 'scaler.pkl' or update this name
-    scaler_candidates = ['dnn_scaler_precision_run.pkl', 'scaler_precision_run.pkl', 'scaler.pkl']
-    scaler = None
-    for s_name in scaler_candidates:
-        if os.path.exists(s_name):
-            scaler = joblib.load(s_name)
-            break
+    # 3. LOAD SCALER
+    try:
+        scaler = joblib.load(scaler_filename)
+    except Exception as e:
+        st.error(f"❌ Error loading Scaler: {e}")
+        return None, None
             
     return model, scaler
 
-with st.spinner("Connecting to Google Drive and downloading AI Brain..."):
-    model, scaler = load_assets()
+model, scaler = load_assets()
 
 # =============================================================================
 # 3. SIDEBAR & INPUTS
