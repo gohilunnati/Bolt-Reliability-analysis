@@ -14,7 +14,7 @@ import os
 # =============================================================================
 # 1. PAGE CONFIGURATION
 # =============================================================================
-st.set_page_config(page_title="Bolt Reliability Digital Twin", page_icon="⚙️", layout="wide")
+st.set_page_config(page_title="Bolt Reliability Digital Twin by Unnati Gohil", page_icon="⚙️", layout="wide")
 
 st.markdown("""
 <style>
