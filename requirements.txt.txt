@@ -1,0 +1,7 @@
+tensorflow
+scikit-learn
+pandas
+numpy
+plotly
+joblib
+gdown
