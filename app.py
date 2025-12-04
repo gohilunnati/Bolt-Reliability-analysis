@@ -9,7 +9,7 @@ import os
 # =============================================================================
 # 0. EXTERNAL FILE LINK
 # =============================================================================
-FILE_URL = "https://drive.google.com/file/d/1e4myU7DVNgEE2oZzLmjNBrBvF7UD_28B/view?usp=sharing"  # <<< ADDED
+
 
 # =============================================================================
 # 1. PAGE CONFIGURATION
@@ -26,7 +26,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Optional: show the URL in the sidebar as a clickable link
-st.sidebar.markdown(f"[🔗 Open reference file]({FILE_URL})")  # <<< ADDED
+
 
 # =============================================================================
 # 2. LOCAL MODEL LOADER (SIMPLE & ROBUST)
@@ -34,7 +34,7 @@ st.sidebar.markdown(f"[🔗 Open reference file]({FILE_URL})")  # <<< ADDED
 @st.cache_resource
 def load_assets():
     # Make sure these filenames match exactly what you uploaded to GitHub!
-    model_filename = 'bolt_dnn_precision.keras' 
+    model_filename = 'bolt_dnn_precision_run.h5' 
     scaler_filename = 'scaler_precision_run.pkl'
     
     # 1. CHECK FILES
